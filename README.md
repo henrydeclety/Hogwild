@@ -1,3 +1,3 @@
 # Hogwild
 
-## Run bash deploy.sh
+bash deploy.sh
