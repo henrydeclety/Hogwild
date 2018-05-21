@@ -1,3 +1,3 @@
 # Hogwild
 
-bash deploy.sh
+bash deploy.sh <nb of workers>
