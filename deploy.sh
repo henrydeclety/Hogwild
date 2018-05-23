@@ -43,5 +43,8 @@ for pod in "${ADDR[@]}"; do
 done
 
 echo
-echo Pour afficher les workers run:
+echo Pour afficher les workers:
 echo bash show.sh
+echo
+echo Pour les kill:
+echo "kubectl delete -f stateful_set.yaml"
