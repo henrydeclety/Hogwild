@@ -8,3 +8,5 @@ RUN bash install.sh
 COPY . /worker
 
 EXPOSE 50051
+
+#CMD ["python", "server.py"]

@@ -22,6 +22,7 @@ c1 = 1
 c2 = 1
 i=0
 converged = False
+port = 50051
 
 # with open('X.pickle', 'rb') as handle:
 #     X = pickle.load(handle)
@@ -107,12 +108,11 @@ class async_SGDServicer(async_pb2_grpc.async_SGDServicer):
         '''
         Receive the data necessary to compute the gradient update and returns the updated dimensions
         '''
-
         weights_2 = request.w_up
         q.put(dict(weights_2))
         return async_pb2.ACK(ack=True)
 
-def serve(port):
+def serve():
     '''
     Initialize the server on port "port"
 
@@ -135,8 +135,8 @@ def compute(ips):
     channels = []
     stubs = []
     for i, ip in enumerate(ips):
-        host = "Connecting to " + ip+':50051'
-        print(host)
+        host = ip+':'+str(port)
+        print("Connecting to server: " + host)
         channels.append(grpc.insecure_channel(host))
         stubs.append(async_pb2_grpc.async_SGDStub(channels[i]))
 
@@ -180,12 +180,12 @@ def loss(convergence_radius):
 
 if __name__ == '__main__':
     ###load file the worker
-    t2 = th.Thread(target=serve, args=[int(sys.argv[1])])
+    t2 = th.Thread(target=serve, args=[])
     t2.start()
-    time.sleep(10)
-    t1 = th.Thread(target=compute, args=[sys.argv[2]])
+    time.sleep(30)
+    t1 = th.Thread(target=compute, args=[sys.argv[1]])
     t1.start()
-    t3 = th.Thread(target=loss, args=[float(sys.argv[3])])
+    t3 = th.Thread(target=loss, args=[float(sys.argv[2])])
     t3.start()
     t3.join()
     t1.join()

@@ -1,19 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  ports:
+  - port: 50051
+    name: web
+  clusterIP: None
+  selector:
+    app: nginx
+---
+
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
   name: systems
-  labels:
-    name: systems
 spec:
-  serviceName: "systems-service"
+  serviceName: "nginx"
   replicas: 2
   selector:
     matchLabels:
-      app: worker
+      app: nginx
   template:
     metadata:
       labels:
-        app: worker
+        app: nginx
     spec:
       containers:
         - name: worker
