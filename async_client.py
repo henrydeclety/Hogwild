@@ -171,7 +171,7 @@ def loss(convergence_radius):
     while not converged:
         weights_snapshot = copy.deepcopy(weights)
         current_loss = hinge_loss(y_train,x_train, weights_snapshot)
-        if old_loss != 0 and ((current_loss-old_loss) < convergence_radius):
+        if old_loss != 0 and (abs(current_loss-old_loss) < convergence_radius):
             converged = True
         old_loss = current_loss
         print(current_loss)
