@@ -26,6 +26,7 @@ IFS=',' read -ra ADDR <<< "$PODS"
 function join_by { local IFS="$1"; shift; echo "$*"; }
 
 # For all pods
+i=0
 for pod in "${ADDR[@]}"; do
 
   # Get the hostname of all other pods
@@ -37,8 +38,17 @@ for pod in "${ADDR[@]}"; do
   done
 
   # Running the worker
+
   other_hosts=$(join_by , "${other_hosts[@]}")
-  screen -dmS $pod bash -c "kubectl exec -it $pod python async_client.py ${other_hosts} 100; exec sh"
+
+  # Split the data if there are more than 3 workers
+  if [ $nb \> 3 ]; then
+    i=$(echo $(( (i + 1)%4 )))
+    screen -dmS $pod bash -c "kubectl exec -it $pod python async_client.py ${other_hosts} 100 $i; exec sh"
+  else
+  	screen -dmS $pod bash -c "kubectl exec -it $pod python async_client.py ${other_hosts} 100; exec sh"
+  fi
+
 
 done
 

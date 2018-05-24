@@ -32,11 +32,16 @@ port = 50051
 # Reading of the files
 
 print('Reading the files')
-file1 = open("./datasets/datasets/lyrl2004_vectors_test_pt0.dat")
-file2 = open("./datasets/datasets/lyrl2004_vectors_test_pt1.dat")
-file3 = open("./datasets/datasets/lyrl2004_vectors_test_pt2.dat")
-file4 = open("./datasets/datasets/lyrl2004_vectors_test_pt3.dat")
-files = [file1, file2, file3, file4]
+if len(sys.argv) < 4:
+    file1 = open("./datasets/datasets/lyrl2004_vectors_test_pt0.dat")
+    file2 = open("./datasets/datasets/lyrl2004_vectors_test_pt1.dat")
+    file3 = open("./datasets/datasets/lyrl2004_vectors_test_pt2.dat")
+    file4 = open("./datasets/datasets/lyrl2004_vectors_test_pt3.dat")
+    files = [file1, file2, file3, file4]
+else:
+    file1 = open("./datasets/datasets/lyrl2004_vectors_test_pt"+sys.argv[3]+".dat")
+    files = [file1]
+
 # Parsing the files and storing the ids of the articles along with their respective features
 id_ = []
 samples = []
