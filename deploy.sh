@@ -3,15 +3,16 @@ killall SCREEN
 # Default number of workers is 4
 mode=${1:-"Async"}
 nb=${2:-4}
+lambda=${3:-0.001}
 
 echo Terminating Containers..
 kubectl delete -f stateful_set.yaml
 
 if [ "$mode" != "Async" ]; then
   worker_type="Sync_Worker"
-  nb=$(echo $(( nb + 1 ))) 
+  nb=$(echo $(( nb + 1 )))
 else
-  worker_type="Async_Worker" 
+  worker_type="Async_Worker"
 fi
 
 echo Launching with $nb workers
@@ -57,14 +58,14 @@ for pod in "${ADDR[@]}"; do
 
     if [ $nb \> 4 ]; then
       i=$(echo $(( (i + 1)%4 )))
-      screen -dmS $pod bash -c "kubectl exec -it $pod python dist_SVM.py $worker_type ${other_hosts} 100 $i; exec sh"
+      screen -dmS $pod bash -c "kubectl exec -it $pod python dist_SVM.py $worker_type ${other_hosts} 25 $lambda $i; exec sh"
     else
-      screen -dmS $pod bash -c "kubectl exec -it $pod python dist_SVM.py $worker_type ${other_hosts} 100; exec sh"
+      screen -dmS $pod bash -c "kubectl exec -it $pod python dist_SVM.py $worker_type ${other_hosts} 100 $lambda; exec sh"
     fi
 
   fi
 
-    
+
 
 
 done
