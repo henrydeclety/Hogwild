@@ -10,6 +10,8 @@ while true; do
     } &> /dev/null
 
     if [ $? -eq 0 ]; then
+      mkdir $pod
+      kubectl cp $pod:/worker/results ./$pod
       echo $pod has converged! The weights are available locally in weights.pickle!
       kubectl delete -f stateful_set.yaml
       exit 1
