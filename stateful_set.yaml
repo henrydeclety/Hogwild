@@ -44,8 +44,8 @@ spec:
             mountPath: /worker/datasets
           resources: 
             limits: 
-              memory: "128Mi"
-              cpu: "100m"
+              memory: "10Gi"
+              cpu: "500m"
       volumes:
       - name: data
         persistentVolumeClaim:

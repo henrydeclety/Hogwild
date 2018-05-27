@@ -33,7 +33,7 @@ port = 50051
 # Reading of the files
 
 print('Reading the files')
-if len(sys.argv) < 4:
+if len(sys.argv) < 5:
     file1 = open("./datasets/datasets/lyrl2004_vectors_test_pt0.dat")
     file2 = open("./datasets/datasets/lyrl2004_vectors_test_pt1.dat")
     file3 = open("./datasets/datasets/lyrl2004_vectors_test_pt2.dat")
@@ -215,9 +215,12 @@ if __name__ == '__main__':
     if sys.argv[1] == 'Coordinator':
         t1 = th.Thread(target=compute, args=[sys.argv[2], 'Sync'])
         t2 = th.Thread(target=loss, args=[int(sys.argv[3])])
+        t1.start()
+        t2.start()
 
     elif sys.argv[1] == 'Sync_Worker':
         t1 = th.Thread(target=serve, args=[])
+        t1.start()
 
     elif sys.argv[1] == 'Async_Worker':
         t1 = th.Thread(target=serve, args=[])
