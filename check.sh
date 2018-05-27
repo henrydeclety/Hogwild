@@ -6,7 +6,7 @@ while true; do
   for pod in "${ADDR[@]}"; do
 
     {
-      kubectl cp $pod:/worker/dist_SVM.py ./weights.pickle
+      kubectl cp $pod:/worker/weights.pickle ./weights_2.pickle
     } &> /dev/null
 
     if [ $? -eq 0 ]; then

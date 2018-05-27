@@ -1,11 +1,18 @@
 killall SCREEN
 
 # Default number of workers is 4
-nb=${1:-4}
+mode=${1:-"Async"}
+nb=${2:-4}
 
 echo Terminating Containers..
-# kubectl delete statefulset systems --grace-period=0 --force
 kubectl delete -f stateful_set.yaml
+
+if [ "$mode" != "Async" ]; then
+  worker_type="Sync_Worker"
+  nb=$(echo $(( nb + 1 ))) 
+else
+  worker_type="Async_Worker" 
+fi
 
 echo Launching with $nb workers
 kubectl create -f stateful_set.yaml
@@ -42,12 +49,22 @@ for pod in "${ADDR[@]}"; do
   other_hosts=$(join_by , "${other_hosts[@]}")
 
   # Split the data if there are more than 3 workers
-  if [ $nb \> 3 ]; then
-    i=$(echo $(( (i + 1)%4 )))
-    screen -dmS $pod bash -c "kubectl exec -it $pod python async_client.py ${other_hosts} 100 $i; exec sh"
+  if [[ "$pod" == "${ADDR[$nb-1]}" && "$mode" != "Async" ]]; then
+    echo Coordinator created
+    screen -dmS $pod bash -c "kubectl exec -it $pod python dist_SVM.py Coordinator ${other_hosts} 100; exec sh"
+
   else
-  	screen -dmS $pod bash -c "kubectl exec -it $pod python async_client.py ${other_hosts} 100; exec sh"
+
+    if [ $nb \> 4 ]; then
+      i=$(echo $(( (i + 1)%4 )))
+      screen -dmS $pod bash -c "kubectl exec -it $pod python dist_SVM.py $worker_type ${other_hosts} 100 $i; exec sh"
+    else
+      screen -dmS $pod bash -c "kubectl exec -it $pod python dist_SVM.py $worker_type ${other_hosts} 100; exec sh"
+    fi
+
   fi
+
+    
 
 
 done
@@ -58,3 +75,4 @@ echo bash show.sh
 echo
 echo Pour les kill:
 echo "kubectl delete -f stateful_set.yaml"
+bash check.sh

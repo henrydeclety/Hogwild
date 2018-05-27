@@ -13,7 +13,7 @@ def zeros(x):
     '''
     return [0]*x
 
-def hinge_loss(y, X, w):
+def hinge_loss(y, X, w, lambda_):
     '''
     Computes the Hinge loss given:
     y: label vector
@@ -24,7 +24,7 @@ def hinge_loss(y, X, w):
     f = multiply_matrix(X, w)
     for i in range(len(y)):
         loss[i] = max(1 - y[i] * f[i], 0)
-    return sum(loss)
+    return sum(loss)-lambda_ / 2 * sum([w[w_i]**2 for w_i in w])
 
 def multiply(x, w):
     '''
@@ -32,7 +32,7 @@ def multiply(x, w):
     '''
     y_n = 0
     for k in x:
-        y_n += x.get(k) * w[k]
+        y_n += x.get(k) * w.get(k,0)
     return y_n
 
 def multiply_matrix(X, w):
