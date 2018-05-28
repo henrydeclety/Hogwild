@@ -1,3 +1,3 @@
 # Hogwild
 
-*bash deploy.sh -nb of workers-*
+bash deploy.sh [Sync-Async] [nb of workers]
