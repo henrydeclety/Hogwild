@@ -1,6 +1,4 @@
 import grpc
-import sgd_pb2_grpc
-import sgd_pb2
 from random import shuffle, randint
 from collections import Counter
 import operator
@@ -81,23 +79,23 @@ def split_data(tx, ty, ratio, seed=1):
     Splits the training data by ratio (dedicated to training)
     '''
     split_idxs = [i for i in range(len(tx))]
-    
+
     # Shuffle the indices randomly
     shuffle(split_idxs)
-    
+
     tx_shuffled = []
     ty_shuffled = []
     for i in range(len(split_idxs)):
         tx_shuffled.append(tx[split_idxs[i]])
         ty_shuffled.append(ty[split_idxs[i]])
-    
+
     # Split by ratio
     split_pos = int(len(tx) * ratio)
     x_train = tx_shuffled[:split_pos]
     x_test = tx_shuffled[split_pos:]
     y_train = ty_shuffled[:split_pos]
     y_test = ty_shuffled[split_pos:]
-    
+
     return x_train, y_train, x_test, y_test
 
 def inbalance(labels):

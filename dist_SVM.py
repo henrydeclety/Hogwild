@@ -136,7 +136,6 @@ def serve():
     '''
     max_workers = 20
     print("Connecting to port", port)
-    print("Number of workers", max_workers)
     server = grpc.server(futures.ThreadPoolExecutor (max_workers=max_workers))
     dist_SGD_pb2_grpc.add_dist_SGDServicer_to_server(dist_SGDServicer(), server)
     server.add_insecure_port('[::]:'+str(port))
@@ -177,7 +176,7 @@ def compute(ips, mode= 'Async'):
                     weights[x] = weights.get(x,0)-l_rate * res[x]
             for s in stubs:
                 s.Send_Weights(dist_SGD_pb2.WS_Update(w_up=res))
-        
+
         elif mode == 'Sync':
             for s in stubs:
                 args_ = (dist_SGD_pb2.WS_Update(w_up=weights), q, s)
